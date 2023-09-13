@@ -1,0 +1,127 @@
+# Given constants
+l = 20  # cm
+dp = 0.1  # cm
+μ = 0.01  # P
+ρ = 0.001  # g/mm³
+Δp_target = 0.008105  # g/cm/s²
+u = 0.75  # cm/s
+
+def bisection_method(func, ab, maxit, maxer):
+    # Bisection algorithm used to solve a nonlinear equation in x
+    
+    # Input variables
+    # func : non-linear function 
+    # ab   : bracketing interval [a, b]
+    # maxit: max iterasion
+    # maxer: max error 
+    
+    # Other variables
+    maxloops = 10  # maximum number of iterations allowed
+    
+    # Root-containing interval [a b]
+    a = ab[0]
+    b = ab[1]
+    fa = func(a)  # Evaluate func at point a
+    fb = func(b)  # Evaluate func at point b
+    
+    # Minimum number of iterations required to meet the criterion of Tolx
+    minloops = int(abs(b - a) / maxit)
+    minloops = minloops if minloops > 0 else 1
+    
+    print(f"Min iterations for reaching convergence = {minloops}")
+    print(" i     x      f(x)")
+    
+    # Iterative solution scheme
+    for i in range(1, maxloops + 1):
+        r = (a + b) / 2  # Mid-point of interval
+        fr = func(r)
+        print(f"{i:3d} {r:.2f} {fr:.2f}")
+        
+        if i >= minloops and abs(fr) < maxer:
+            break  # Exit the loop if convergence criteria are met
+        
+        if fr * fa < 0:  # [a x] contains root
+            fb = fr
+            b = r
+        else:  # [x b] contains root
+            fa = fr
+            a = r
+
+# Define your nonlinear function here
+def calculate_pressure_drop(ε):
+     return 150 * ((1 - ε)**2 * μ * u )/ dp**2 + 1.75 *( (1 - ε) * ρ * u**2 )/ dp
+
+# Set the bracketing interval and tolerances
+ab = [0.1, 0.9]  # Example bracketing interval [a, b]
+maxit = 0.01 #nilai ini masih blom yakin
+maxer = 0.01 #inijuga masi blom yakin
+
+# Call the bisection method
+bisection_method(calculate_pressure_drop, ab, maxit, maxer)
+
+##################################################################
+# Regula-Falsi method
+def regula_falsi_method(func, ab, maxit, maxer):
+    # Regula-Falsi method used to solve a nonlinear equation in x
+    
+    # Input variables
+    # func : non-linear function 
+    # ab : bracketing interval [a, b]
+    # maxit : max iterasion
+    # maxer: max error
+    
+    # Other variables
+    maxloops = 10
+    # Root-containing interval [a, b]
+    a = ab[0]
+    b = ab[1]
+    fa = func(a)
+    fb = func(b)
+    
+    print(" i     x      f(x)")
+    xold = b
+    
+    # Iterative solution scheme
+    for i in range(1, maxloops + 1):
+        # Intersection of secant line with x-axis
+        c = a - fa * (b - a) / (fa - a)
+        fc = func(c)
+        print(f"{i:2d} {c:.2f} {fc:.2f}")
+        
+        if abs(c - xold) <= maxit and abs(fc) < maxer:
+            break  # Exit the loop if convergence criteria are met
+        
+        if fc * a < 0:  # [a c] contains root
+            fa = fc
+            a = c
+        else:  # [c b] contains root
+            fb = fc
+            b = c
+        xold = c
+
+# Define your nonlinear function here
+def calculate_pressure_drop(ε):
+     return 150 * ((1 - ε)**2 * μ * u )/ dp**2 + 1.75 *( (1 - ε) * ρ * u**2 )/ dp
+
+# Set the bracketing interval and tolerances
+ab = [0.1, 0.9]  # Example bracketing interval [a, b]
+maxit = 0.01
+maxer = 0.01
+
+# Call the Regula-Falsi method
+regula_falsi_method(calculate_pressure_drop, ab, maxit, maxer)
+
+def bisection():
+    iterations = 0
+    r = 0
+    return r,iterations
+def regula_falsi():
+    iterations = 0
+    c = 0
+    return c, iterations
+    
+# Calculate ε using both methods
+bisection_r, bisection_iterations = bisection()
+regula_falsi_c, regula_falsi_iterations = regula_falsi()
+print(f"Bisection Method: ε = {bisection_r:.2f}, Iterations = {bisection_iterations}")
+print(f"Regula-Falsi Method: ε = {regula_falsi_c:.2f}, Iterations = {regula_falsi_iterations}")
