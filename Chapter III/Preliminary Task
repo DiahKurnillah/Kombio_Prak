@@ -1,0 +1,23 @@
+def f(x):
+    return x**3 + x**2 + x + 1
+
+def df(x):
+    return 3*x**2 + 2*x + 1
+
+def newton_raphson(initial_guess, epsilon):
+    x_n = initial_guess
+    while True:
+        x_n1 = x_n - f(x_n) / df(x_n)
+        if abs(x_n1 - x_n) < epsilon or abs(f(x_n)) < epsilon:
+            return x_n1
+        x_n = x_n1
+        
+
+# Find the roots in the given intervals
+root1 = newton_raphson(-1.5, 1e-6)  # For the interval [-2, -1]
+root2 = newton_raphson(0.5, 1e-6)   # For the interval [0, 1]
+root3 = newton_raphson(1.5, 1e-6)   # For the interval [1, 2]
+
+print("Root 1:", root1)
+print("Root 2:", root2)
+print("Root 3:", root3)
